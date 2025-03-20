@@ -1,0 +1,44 @@
+@using TaskStatus = TaskManagerApp.Data.TaskStatus
+@{
+    var enumValuesList = Enum.GetValues(typeof(TaskStatus)).Cast<int>().ToList();
+}
+
+@foreach (var task in ViewBag.taskList)
+{
+    <div class="card task-card" id="task-@task.Id-@task.Status" style="width: 18rem">
+        <div class="card-body">
+            <div class="buttons">
+                <button id="btn-delete-@task.Id" class="btn-delete-button float-end pe-2" onclick="deleteTaskModal(@task.Id, '@task.Status')"><i class="bi bi-trash text-danger"></i></button>
+            </div>
+            <h5 class="card-title">@task.Name</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@task.CreationDate</h6>
+            <p class="card-text">@task.Content</p>
+            <div class="d-flex justify-content-around">
+                @if (
+                    enumValuesList.Min() < (int)task.Status
+                )
+                {
+                    <a href="#"
+                       onclick="ChangeStatusAndRemoveCard(@task.Id,'@task.Status', '@((TaskManagerApp.Data.TaskStatus)((int)task.Status - 1))')"
+                       class="card-link">
+                        <h4><i class="bi bi-arrow-left"></i></h4>
+                    </a>
+                }
+                @if (enumValuesList.Min() < (int)task.Status && enumValuesList.Max() > (int)task.Status)
+                {
+                    <p class="text-secondary">||</p>
+                }
+                @if (
+                    enumValuesList.Max() > (int)task.Status
+                )
+                {
+                    <a href="#" class="card-link"
+                       onclick="ChangeStatusAndRemoveCard(@task.Id,'@task.Status', '@((TaskManagerApp.Data.TaskStatus)((int)task.Status + 1))')">
+                        <h4><i class="bi bi-arrow-right"></i></h4>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+}
+
